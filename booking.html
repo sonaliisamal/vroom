@@ -6,7 +6,6 @@
   <title>Vroom - Booking</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-
 <body>
 
 <header>
@@ -14,40 +13,27 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="cars.html">Cars</a>
-    <a href="booking.html" class="active">Booking</a>
+    <a href="booking.html">Booking</a>
   </nav>
 </header>
 
 <main>
-  <section class="booking-container">
-    <h2>Book Your Ride</h2>
-    <p class="subtitle">Complete the form to reserve your car</p>
-
-    <form class="booking-form">
-      <label>Full Name</label>
-      <input type="text" placeholder="Enter your full name" required>
-
-      <label>Email</label>
-      <input type="email" placeholder="Enter your email" required>
-
-      <label>Car Model</label>
-      <select required>
-        <option value="">Select a car</option>
+  <section>
+    <h2>Book Your Car</h2>
+    <form>
+      <label for="car">Select Car:</label>
+      <select id="car" name="car">
         <option>Honda City</option>
-        <option>Hyundai Creta</option>
-        <option>Maruti Swift</option>
+        <option>Toyota Corolla</option>
       </select>
 
-      <label>Pick-up Date</label>
-      <input type="date" required>
+      <label for="start">Start Date:</label>
+      <input type="date" id="start" name="start">
 
-      <label>Drop-off Date</label>
-      <input type="date" required>
+      <label for="end">End Date:</label>
+      <input type="date" id="end" name="end">
 
-      <label>Pick-up Location</label>
-      <input type="text" placeholder="e.g. Bhubaneswar Airport" required>
-
-      <button type="submit" class="book-btn">Confirm Booking</button>
+      <button type="submit">Book Now</button>
     </form>
   </section>
 </main>
@@ -56,5 +42,6 @@
   <p>© 2025 Vroom</p>
 </footer>
 
+<script src="assets/js/main.js"></script>
 </body>
 </html>
