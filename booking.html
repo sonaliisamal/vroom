@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vroom - Booking</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Vroom</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="cars.html">Cars</a>
+    <a href="booking.html" class="active">Booking</a>
+  </nav>
+</header>
+
+<main>
+  <section class="booking-container">
+    <h2>Book Your Ride</h2>
+    <p class="subtitle">Complete the form to reserve your car</p>
+
+    <form class="booking-form">
+      <label>Full Name</label>
+      <input type="text" placeholder="Enter your full name" required>
+
+      <label>Email</label>
+      <input type="email" placeholder="Enter your email" required>
+
+      <label>Car Model</label>
+      <select required>
+        <option value="">Select a car</option>
+        <option>Honda City</option>
+        <option>Hyundai Creta</option>
+        <option>Maruti Swift</option>
+      </select>
+
+      <label>Pick-up Date</label>
+      <input type="date" required>
+
+      <label>Drop-off Date</label>
+      <input type="date" required>
+
+      <label>Pick-up Location</label>
+      <input type="text" placeholder="e.g. Bhubaneswar Airport" required>
+
+      <button type="submit" class="book-btn">Confirm Booking</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 Vroom</p>
+</footer>
+
+</body>
+</html>
