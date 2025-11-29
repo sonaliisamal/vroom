@@ -53,3 +53,14 @@
   border-radius: 8px;
   background: #f8f8f8;
 }
+
+
+.wishlist-card {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: #f3f3f3;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
