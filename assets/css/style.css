@@ -46,3 +46,10 @@
   background: #0050cc;
 }
 
+.booking-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  background: #f8f8f8;
+}
