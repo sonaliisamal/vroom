@@ -118,3 +118,23 @@ body {
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+
+/* Confirmation */
+.confirm-box {
+  background: white;
+  padding: 30px;
+  max-width: 450px;
+  margin: auto;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Footer */
+.footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  background: white;
+  border-top: 1px solid #ddd;
+}
