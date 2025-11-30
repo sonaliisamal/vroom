@@ -8,40 +8,44 @@
 </head>
 <body>
 
-<header>
-  <h1>Vroom</h1>
-  <nav>
+<header class="header">
+  <h1 class="logo">Vroom</h1>
+  <nav class="nav">
     <a href="index.html">Home</a>
     <a href="cars.html">Cars</a>
     <a href="booking.html">Booking</a>
   </nav>
 </header>
 
-<main>
-  <section>
+<main class="container">
+
+  <div class="form-box">
     <h2>Book Your Car</h2>
-    <form>
-      <label for="car">Select Car:</label>
-      <select id="car" name="car">
-        <option>Honda City</option>
-        <option>Toyota Corolla</option>
-      </select>
 
-      <label for="start">Start Date:</label>
-      <input type="date" id="start" name="start">
+    <label>Full Name</label>
+    <input type="text" placeholder="Enter your full name">
 
-      <label for="end">End Date:</label>
-      <input type="date" id="end" name="end">
+    <label>Pick-up Date</label>
+    <input type="date">
 
-      <button type="submit">Book Now</button>
-    </form>
-  </section>
+    <label>Return Date</label>
+    <input type="date">
+
+    <label>Select Car</label>
+    <select>
+      <option>Honda City</option>
+      <option>Hyundai Creta</option>
+      <option>Maruti Swift</option>
+    </select>
+
+    <a class="btn" href="confirmation.html">Confirm Booking</a>
+  </div>
+
 </main>
 
-<footer>
+<footer class="footer">
   <p>© 2025 Vroom</p>
 </footer>
 
-<script src="assets/js/main.js"></script>
 </body>
 </html>

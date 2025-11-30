@@ -8,32 +8,38 @@
 </head>
 <body>
 
-<header>
-  <h1>Vroom</h1>
-  <nav>
+<header class="header">
+  <h1 class="logo">Vroom</h1>
+  <nav class="nav">
     <a href="index.html">Home</a>
     <a href="cars.html">Cars</a>
     <a href="booking.html">Booking</a>
   </nav>
 </header>
 
-<main>
-  <section>
-    <h2>Car Details</h2>
-    <img src="assets/images/car1.jpg" alt="Car Image" style="width:300px;height:auto;">
+<main class="container">
 
-    <p><strong>Model:</strong> Honda City</p>
-    <p><strong>Price per day:</strong> ₹2000</p>
-    <p><strong>Description:</strong> Comfortable and fuel-efficient sedan.</p>
+  <div class="car-details-box">
 
-    <a href="booking.html">Book Now</a>
-  </section>
+    <img class="car-details-img" src="assets/images/car1.jpg" alt="Honda City">
+
+    <div class="car-details-info">
+      <h2>Honda City</h2>
+      <p><strong>Price per day:</strong> ₹2000</p>
+      <p><strong>Fuel Type:</strong> Petrol</p>
+      <p><strong>Seats:</strong> 5</p>
+      <p><strong>Description:</strong> A premium, comfortable and fuel-efficient sedan with smooth driving experience.</p>
+
+      <a class="btn" href="booking.html">Book Now</a>
+    </div>
+
+  </div>
+
 </main>
 
-<footer>
+<footer class="footer">
   <p>© 2025 Vroom</p>
 </footer>
 
-<script src="assets/js/main.js"></script>
 </body>
 </html>

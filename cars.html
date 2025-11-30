@@ -7,33 +7,53 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Vroom</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="cars.html">Cars</a>
-      <a href="booking.html">Booking</a>
-    </nav>
-  </header>
 
-  <main>
-    <h2>Available Cars</h2>
-    <div class="car-list">
-      <!-- Example car -->
-      <div class="car-item">
-        <img src="assets/images/car1.jpg" alt="Car 1">
-        <h3>Car Name 1</h3>
-        <p>Price: $50/day</p>
-        <a href="car-details.html">View Details</a>
-      </div>
-      <!-- Add more cars similarly -->
+<header class="header">
+  <h1 class="logo">Vroom</h1>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="cars.html">Cars</a>
+    <a href="booking.html">Booking</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <h2 class="page-title">Available Cars</h2>
+
+  <div class="cars-grid">
+
+    <!-- Car 1 -->
+    <div class="car-card">
+      <img src="assets/images/car1.jpg" alt="Honda City">
+      <h3>Honda City</h3>
+      <p>₹2000/day</p>
+      <a class="btn small-btn" href="car-details.html">View Details</a>
     </div>
-  </main>
 
-  <footer>
-    <p>&copy; 2025 Vroom</p>
-  </footer>
+    <!-- Car 2 -->
+    <div class="car-card">
+      <img src="assets/images/car2.jpg" alt="Hyundai Creta">
+      <h3>Hyundai Creta</h3>
+      <p>₹2500/day</p>
+      <a class="btn small-btn" href="car-details.html">View Details</a>
+    </div>
 
-  <script src="assets/js/main.js"></script>
+    <!-- Car 3 -->
+    <div class="car-card">
+      <img src="assets/images/car3.jpg" alt="Maruti Swift">
+      <h3>Maruti Swift</h3>
+      <p>₹1500/day</p>
+      <a class="btn small-btn" href="car-details.html">View Details</a>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2025 Vroom</p>
+</footer>
+
 </body>
 </html>
