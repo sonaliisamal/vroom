@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - About Us</title>
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Solid Pink Background matching the screenshot */
+            background-color: #E88D8D; 
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden; /* Prevent scrollbar from watermark width */
+        }
+
+        /* --- Large Background Watermark --- */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25vw; /* Massive text size */
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            color: white;
+            opacity: 0.07; /* Very faint transparency */
+            z-index: 0;
+            pointer-events: none; /* Allows clicking through it */
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Main Content --- */
+        .content-container {
+            position: relative;
+            z-index: 10; /* Above the watermark */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .main-title {
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+            /* No text shadow in the new flat design */
+        }
+
+        .description {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 900px;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        /* --- Why Choose Us Section --- */
+        .sub-title {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #222; 
+            text-shadow: none;
+            color: black;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .card {
+            padding: 40px 20px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            color: black;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        /* --- Specific Card Colors --- */
+        /* First and Last cards are white */
+        .card:nth-child(1),
+        .card:nth-child(3) {
+            background-color: white;
+        }
+
+        /* Middle card is Grey */
+        .card:nth-child(2) {
+            background-color: #dcdcdc; /* Light Grey */
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .main-title { font-size: 40px; }
+            .description { font-size: 16px; }
+            .cards-container { flex-direction: column; }
+            .card { margin-bottom: 20px; }
+            .watermark { font-size: 40vw; } /* Adjust watermark for mobile */
+            nav { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Watermark -->
+    <div class="watermark">VROOM</div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">My Booking</a></li>
+                <li><a href="#">Sign in</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        
+        <h1 class="main-title">About Our Company</h1>
+        
+        <p class="description">
+            Vroom is a next-generation car rental service built to make personal transportation simple, fast, and accessible for everyone. We bring together a clean digital experience and a thoughtfully curated fleet of vehicles, so users can find the perfect car for any need without confusion or delays. Our platform is designed for smooth browsing, transparent information, and quick decision-making, ensuring that every visitor enjoys a seamless rental journey from start to finish.
+        </p>
+
+        <h2 class="sub-title">Why Choose Us?</h2>
+
+        <div class="cards-container">
+            <!-- Card 1 (White) -->
+            <div class="card">
+                <h3>24x7 Customer Online<br>Support</h3>
+                <p>Get quick assistance anytime through our always-active support channel.</p>
+            </div>
+
+            <!-- Card 2 (Grey) -->
+            <div class="card">
+                <h3>Reservation Anytime<br>You Want</h3>
+                <p>Book a car at any hour with a simple, hassle-free reservation flow.</p>
+            </div>
+
+            <!-- Card 3 (White) -->
+            <div class="card">
+                <h3>Well-Maintained<br>Cars</h3>
+                <p>Every vehicle is regularly serviced and kept in top condition for a smooth, safe ride.</p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
