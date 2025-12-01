@@ -1,59 +1,693 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vroom - Cars</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Search Results</title>
+    <!-- Using FontAwesome for the icons (Location, Calendar, Clock) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll, we handle it inside */
+            background-color: #f9f9f9;
+        }
+
+        /* --- Top Navigation --- */
+        .top-nav {
+            background-color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            flex-shrink: 0; /* Don't shrink */
+        }
+
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: black;
+        }
+
+        .rating {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars { color: #FFC107; }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .nav-links a:hover { color: #D90000; }
+
+        /* --- Search Bar Section --- */
+        .search-bar-container {
+            background-color: #f0f0f0;
+            padding: 15px 40px;
+            border-bottom: 1px solid #ccc;
+            flex-shrink: 0; /* Don't shrink */
+        }
+
+        .search-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-group {
+            background: #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .input-group i { color: #555; }
+
+        .input-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-label { font-size: 11px; color: #777; }
+        .input-value { font-weight: 700; font-size: 14px; color: #000; }
+
+        .search-btn {
+            background-color: #D90000;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .search-btn:hover { background-color: #b30000; }
+
+        /* --- Main Content Layout --- */
+        .main-content {
+            display: flex;
+            flex: 1; /* Take remaining height */
+            overflow: hidden; /* Container doesn't scroll, children do */
+        }
+
+        /* --- Sidebar (Filters) --- */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto; /* Scroll if filters get too long */
+        }
+
+        .filter-header {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .filter-section { margin-bottom: 25px; }
+        .filter-title { 
+            font-size: 16px; 
+            color: #777; 
+            margin-bottom: 10px; 
+            font-family: serif; /* Matches screenshot styling */
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .filter-option input { 
+            width: 16px; 
+            height: 16px; 
+            accent-color: #D90000; 
+        }
+
+        /* --- Car Grid (Scrollable Area) --- */
+        .car-results {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto; /* THIS ENABLES THE SCROLL FOR CARS */
+            background-color: #f9f9f9;
+        }
+
+        .car-grid {
+            display: grid;
+            /* Auto-fit columns: roughly 3 per row on wide screens */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- Car Card Design --- */
+        .car-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-card:hover { transform: translateY(-5px); }
+
+        .car-image-box {
+            background-color: #eee;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .car-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .car-details { padding: 15px; }
+
+        .car-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .features {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mileage {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .card-stars { color: #FFC107; font-size: 14px; margin-bottom: 15px; }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .price span {
+            font-size: 12px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .reserve-btn {
+            background-color: #D90000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        
+        .reserve-btn:hover { background-color: #b30000; }
+
+        /* Scrollbar Styling for a cleaner look */
+        .car-results::-webkit-scrollbar { width: 8px; }
+        .car-results::-webkit-scrollbar-track { background: #f1f1f1; }
+        .car-results::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        .car-results::-webkit-scrollbar-thumb:hover { background: #bbb; }
+
+        @media (max-width: 768px) {
+            .main-content { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; padding: 10px; }
+            .car-results { overflow: visible; } /* Standard scroll on mobile */
+            .search-inputs { flex-direction: column; align-items: stretch; }
+            .nav-links { display: none; }
+        }
+    </style>
 </head>
 <body>
 
-<header class="header">
-  <h1 class="logo">Vroom</h1>
-  <nav class="nav">
-    <a href="index.html">Home</a>
-    <a href="cars.html">Cars</a>
-    <a href="booking.html">Booking</a>
-  </nav>
-</header>
-
-<main class="container">
-
-  <h2 class="page-title">Available Cars</h2>
-
-  <div class="cars-grid">
-
-    <!-- Car 1 -->
-    <div class="car-card">
-      <img src="assets/images/car1.jpg" alt="Honda City">
-      <h3>Honda City</h3>
-      <p>₹2000/day</p>
-      <a class="btn small-btn" href="car-details.html">View Details</a>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo-section">
+            <div class="logo">VROOM</div>
+            <div class="rating">
+                <span class="stars">★★★★☆</span> 
+                <span>4 of 5 based on 2500+ reviews</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">My Booking</a></li>
+            <li><a href="#">Sign in</a></li>
+        </ul>
     </div>
 
-    <!-- Car 2 -->
-    <div class="car-card">
-      <img src="assets/images/car2.jpg" alt="Hyundai Creta">
-      <h3>Hyundai Creta</h3>
-      <p>₹2500/day</p>
-      <a class="btn small-btn" href="car-details.html">View Details</a>
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+        <div class="search-inputs">
+            <!-- Location -->
+            <div class="input-group">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="input-text">
+                    <span class="input-label">Location</span>
+                    <span class="input-value">Delhi</span>
+                </div>
+            </div>
+            <!-- Pick-up Date -->
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="input-text">
+                    <span class="input-label">Pick-up date</span>
+                    <span class="input-value">7th March</span>
+                </div>
+            </div>
+            <!-- Drop-off Date -->
+            <div class="input-group">
+                <i class="fas fa-calendar-check"></i>
+                <div class="input-text">
+                    <span class="input-label">Drop-off date</span>
+                    <span class="input-value">9th March</span>
+                </div>
+            </div>
+            <!-- Pick-up Time -->
+            <div class="input-group">
+                <i class="fas fa-clock"></i>
+                <div class="input-text">
+                    <span class="input-label">Pick-up time</span>
+                    <span class="input-value">10:30 a.m.</span>
+                </div>
+            </div>
+            <!-- Drop-off Time -->
+            <div class="input-group">
+                <i class="fas fa-history"></i>
+                <div class="input-text">
+                    <span class="input-label">Drop-off time</span>
+                    <span class="input-value">06:30 p.m.</span>
+                </div>
+            </div>
+            <!-- Button -->
+            <button class="search-btn">Search</button>
+        </div>
     </div>
 
-    <!-- Car 3 -->
-    <div class="car-card">
-      <img src="assets/images/car3.jpg" alt="Maruti Swift">
-      <h3>Maruti Swift</h3>
-      <p>₹1500/day</p>
-      <a class="btn small-btn" href="car-details.html">View Details</a>
+    <!-- Main Layout -->
+    <div class="main-content">
+        
+        <!-- Sidebar Filters -->
+        <aside class="sidebar">
+            <div class="filter-header">Filter by</div>
+            
+            <div class="filter-section">
+                <div class="filter-title">Car type</div>
+                <label class="filter-option"><input type="checkbox"> Mini 5</label>
+                <label class="filter-option"><input type="checkbox"> Standard 87</label>
+                <label class="filter-option"><input type="checkbox"> Compact 6</label>
+                <label class="filter-option"><input type="checkbox"> Economy 12</label>
+                <label class="filter-option"><input type="checkbox"> Van 2</label>
+                <label class="filter-option"><input type="checkbox"> Other 15</label>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Capacity</div>
+                <label class="filter-option"><input type="checkbox"> 2-5 passengers</label>
+                <label class="filter-option"><input type="checkbox"> 6 or more passengers</label>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Price</div>
+                <label class="filter-option"><input type="checkbox"> Low to high</label>
+                <label class="filter-option"><input type="checkbox"> High to Low</label>
+            </div>
+        </aside>
+
+        <!-- Car Results Grid -->
+        <main class="car-results">
+            <div class="car-grid">
+                
+                <!-- Car 1: Honda Amaze -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/honda amaze.png" alt="Honda Amaze">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Honda Amaze</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22-23 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 2: Baleno -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/baleno.png" alt="Baleno">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Baleno (Sigma)</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22-30 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 3: Glanza -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/glanza.png" alt="Toyota Glanza">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Toyota Glanza V</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22-23 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hyundai i20 -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/i20.png" alt="Hyundai i20">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai i20</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">18–20 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tata Altroz -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/tata altroz.png" alt="Tata Altroz">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Altroz</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">18-25 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,750 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maruti Suzuki Dzire -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/maruti suzuki dsire.png" alt="Suzuki Dzire">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Dzire</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22-28 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,550 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hyundai Aura -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/hundai aura.png" alt="Hyundai Aura">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai Aura</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">18-25 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,800 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tata Tiago -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/tata tiago.png" alt="Tata Tiago">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Tiago</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">20-28 km/kg</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,400 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tata Punch -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/tata punch.png" alt="Tata Punch">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Punch</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maruti Suzuki Alto K10 -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/altos k10.png" alt="uzuki Alto K10">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Alto K10</h3>
+                        <div class="features">
+                            <span>4 Seater</span>
+                            <span>Diesel</span>
+                        </div>
+                        <div class="mileage">22-30 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,000 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toyota Fortuner -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/fortuner.png" alt="Toyota Fortuner">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Toyota Fortuner</h3>
+                        <div class="features">
+                            <span>7 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">8-10 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 4,500 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maruti Suzuki Swift -->
+                <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/swift.png" alt="Suzuki Swift">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Swift</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">22 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,300 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Mahindra Scorpio -->
+                 <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/scorpio.png" alt="Mahindra Scorpio">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Mahindra Scorpio</h3>
+                        <div class="features">
+                            <span>7 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">19-21 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,450 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Renault Duster -->
+                 <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/duster.png" alt="Renault Duster">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Renault Duster</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Petrol</span>
+                        </div>
+                        <div class="mileage">14-19 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 2,700 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Hyundai Creta -->
+                 <div class="car-card">
+                    <div class="car-image-box">
+                        <img src="assets/images/creta.png" alt="Hyundai Creta">
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai Creta</h3>
+                        <div class="features">
+                            <span>5 Seater</span>
+                            <span>Hybrid</span>
+                        </div>
+                        <div class="mileage">15-21 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 3,000 <span>per day</span></div>
+                            <button class="reserve-btn">Reserve deal</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
-
-  </div>
-
-</main>
-
-<footer class="footer">
-  <p>© 2025 Vroom</p>
-</footer>
 
 </body>
 </html>
