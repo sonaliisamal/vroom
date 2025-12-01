@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Offers</title>
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #EEEEEE; /* Light gray background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            background-color: #D90000; /* Red header to match theme or keep transparent if preferred. Using red/white based on previous context, but let's stick to simple transparent or white for this specific page look. Actually, the screenshot doesn't show header, but for site consistency I'll add a simple white one. */
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #D90000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            color: #D90000;
+        }
+
+        /* --- Main Offers Section --- */
+        .offers-section {
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        /* Heading Area */
+        .heading-container {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .main-title {
+            font-size: 48px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: black;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        /* Red line above OFFERS */
+        .main-title::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #D90000;
+        }
+
+        .sub-title {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .offer-card {
+            background-color: white;
+            padding: 20px;
+            text-align: left; /* Align text left as per screenshot */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .price-highlight {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        /* Bottom Button */
+        .book-now-btn {
+            background-color: #E31E24; /* Specific red shade */
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(227, 30, 36, 0.3);
+        }
+
+        .book-now-btn:hover {
+            background-color: #c41217;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                padding: 15px 20px;
+            }
+            nav ul {
+                display: none; /* Hide nav on mobile for simplicity */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">My Booking</a></li>
+                <li><a href="#">Sign in</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Offers Content -->
+    <div class="offers-section">
+        
+        <div class="heading-container">
+            <h1 class="main-title">OFFERS</h1>
+            <p class="sub-title">See our special offer to get our vehicles for affordable prices</p>
+        </div>
+
+        <div class="cards-grid">
+            
+            <!-- Card 1: Daily Rental -->
+            <div class="offer-card">
+                <!-- Yellow SUV Image -->
+                <img src="assets/images/offers1.png" alt="Yellow SUV" class="car-image">
+                <h2 class="card-title">Daily Rental</h2>
+                <div class="price-highlight">Starting at ₹1200 per day</div>
+                <p class="card-desc">
+                    Perfect for quick city travel, short personal trips, or last-minute plans where you only need a reliable car for a day or two.
+                </p>
+            </div>
+
+            <!-- Card 2: Weekend Rental -->
+            <div class="offer-card">
+                <!-- Red Sports Car Image -->
+                <img src="assets/images/offers2.png" alt="Red Sports Car" class="car-image">
+                <h2 class="card-title">Weekend Rental</h2>
+                <div class="price-highlight">5–10% on the total amount</div>
+                <p class="card-desc">
+                    Great for short holidays, road trips, and relaxing weekend getaways, giving you a convenient package from Friday to Monday at a fair price.
+                </p>
+            </div>
+
+            <!-- Card 3: Weekly Rental -->
+            <div class="offer-card">
+                <!-- Blue Sedan Image -->
+                <img src="assets/images/offers3.png" alt="Blue Sedan" class="car-image">
+                <h2 class="card-title">Weekly Rental</h2>
+                <div class="price-highlight">10-15% on the total amount</div>
+                <p class="card-desc">
+                    Ideal for long work assignments, extended vacations, or week-long stays where you want consistent access to a comfortable, budget-friendly vehicle.
+                </p>
+            </div>
+
+        </div>
+
+        <button class="book-now-btn">BOOK NOW-></button>
+
+    </div>
+
+</body>
+</html>
