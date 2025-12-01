@@ -1,67 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vroom | Rent Your Dream Car</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Car Rental</title>
+    <style>
+        /* --- General Reset & Fonts --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevents scroll if content fits exactly */
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            text-transform: capitalize;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            font-size: 17px;
+        }
+
+        /* --- Hero Section --- */
+       .hero {
+    flex: 1;
+    position: relative;
+    background:
+       linear-gradient(rgba(215, 0, 0, 0.5), rgba(215, 0, 0, 0.5)),
+        url('assets/images/1.jpg');
+    background-size: 100%;        /* Zooms in */
+    background-position: center;  /* Keep centered */
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+}
+
+
+
+        .hero-content {
+            color: white;
+            margin-top: -50px; /* Slight offset upwards */
+        }
+
+        h1 {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1.1;
+            font-family: 'Arial Narrow', sans-serif; /* Condensed look */
+            text-transform: uppercase;
+            max-width: 600000px;
+            margin-bottom: 10px;
+            margin-left: 5%;
+            margin-right: -20%;
+        }
+
+        .book-link {
+            display: inline-block;
+            color: rgb(255, 255, 255);
+            font-size: 26px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: 400;
+            margin-left: 8%;
+            margin-right: -20%;
+        }
+
+        
+
+        .book-link:hover {
+    background-color: rgba(255, 255, 255, 0);
+    color: #ffffff;
+    font-size: 30px;
+    transform: translateY(-3px);
+}
+
+
+
+
+        /* --- Stats Overlay --- */
+        .stats {
+    position: absolute;
+    bottom: 40px;
+    right: 150px; /* Increase value to move left */
+    color: rgb(255, 255, 255);
+    font-size: 40px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+        .stats {
+    position: absolute;
+    bottom: 40px;
+    /* left: 100px;  Start from left instead of right */
+}
+
+
+        /* The vertical line separator */
+        .stats span:first-child::after {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.353);
+            margin-left: 20px;
+            vertical-align: middle;
+        }
+
+        /* --- Bottom Info Bar --- */
+        .bottom-bar {
+            height: 80px;
+           /* background-color: #ffffff;  Light greyish pink tone */
+            display: flex;
+            position: relative;
+        }
+
+        .address-box {
+            flex: 1.5;
+            display: flex;
+            align-items: center;
+            padding-left: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #000;
+            background: rgba(249, 247, 247, 0.514); /* Slightly transparent white overlay */
+        }
+
+        .contact-box {
+    flex: 1;
+    background-color: #b8b7b7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 0px;
+    padding-right: 0px;
+    position: relative;
+    color: #000;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* The angled cut effect */
+.contact-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 520px; /* Pulls it to the left */
+    width: 100px;
+    height: 100%;
+    background-color: #bebcbc;
+    transform: skewX(-30deg); /* Creates the slant */
+    z-index: 1;
+}
+        /* Ensure text is above the slant */
+        .contact-text {
+            z-index: 2; 
+        }
+
+        /* --- Responsive Tweaks --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            header { padding: 20px; }
+            nav ul { display: none; } /* Hide nav on mobile for simplicity */
+            .stats { font-size: 20px; bottom: 20px; right: 20px; }
+            .bottom-bar { flex-direction: column; height: auto; }
+            .address-box, .contact-box { padding: 20px; width: 100%; }
+            .contact-box::before { display: none; } /* Remove slant on mobile */
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <nav class="container">
-    <h1>Vroom</h1>
-    <div>
-      <a href="index.html">Home</a>
-      <a href="cars.html">Cars</a>
-      <a href="booking.html">Booking</a>
-    </div>
-  </nav>
-</header>
+    <!-- Navigation Header -->
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">My Booking</a></li>
+                <li><a href="#">Sign in</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<section class="hero">
-  <div class="container">
-    <h1>Drive Your Dream Today</h1>
-    <p>Choose from a wide range of premium and affordable cars.</p>
-    <a href="cars.html" class="btn">Browse Cars</a>
-  </div>
-</section>
+    <!-- Main Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>THE CAR IS WAITING<br>FOR YOU</h1>
+            <a href="#" class="book-link">Book your car -></a>
+        </div>
 
-<section class="container" style="padding: 60px 0;">
-  <h2 style="text-align:center;">Why Choose Vroom?</h2>
-  <div class="car-grid" style="margin-top: 30px;">
+        <div class="stats">
+            <span>7+ Years</span>
+            <span>72+ Cars</span>
+        </div>
+    </section>
 
-    <div class="car-card">
-      <img src="assets/images/car1.jpg" alt="Car">
-      <div class="content">
-        <h3>Best Prices</h3>
-        <p>Affordable rentals with premium service quality.</p>
-      </div>
-    </div>
-
-    <div class="car-card">
-      <img src="assets/images/car2.jpg" alt="Car">
-      <div class="content">
-        <h3>Wide Range</h3>
-        <p>Select from hatchbacks, sedans, SUVs, and luxury cars.</p>
-      </div>
-    </div>
-
-    <div class="car-card">
-      <img src="assets/images/car3.jpg" alt="Car">
-      <div class="content">
-        <h3>Easy Booking</h3>
-        <p>Simple and fast booking with instant confirmation.</p>
-      </div>
+    <!-- Bottom Information Bar -->
+    <div class="bottom-bar">
+        <div class="address-box">
+            2nd Floor, Metro One Complex, Karol Bagh, New Delhi 110005
+        </div>
+        <div class="contact-box">
+            <div class="contact-text">
+                Customer Support: 98102 44789<br>
+                Email: support@vroomcars.in
+            </div>
+        </div>
     </div>
 
-  </div>
-</section>
-
-<footer style="text-align:center; padding: 20px 0; background:#f5f5f5; margin-top:30px;">
-  <p>© 2025 Vroom. All rights reserved.</p>
-</footer>
-
-<script src="assets/js/main.js"></script>
 </body>
 </html>
