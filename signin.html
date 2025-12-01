@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Sign In</title>
+    <style>
+        /* --- CSS STYLES START HERE --- */
+        
+        /* Reset defaults */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden; /* Prevents scrolling */
+            /* This creates the vertical split background: 35% White, 65% Pink */
+            background: linear-gradient(90deg, #ffffff 35%, #F59696 35%);
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            /* Ensures logo stays on the white side */
+            width: 35%; 
+        }
+
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white; /* White links on the pink background */
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Main Layout Container --- */
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* --- Car Image --- */
+        .car-container {
+            position: absolute;
+            left: 8%; /* Adjusts position to overlap the split line */
+            z-index: 5;
+            width: 55%; /* Size of the car area */
+        }
+
+        .car-img {
+            width: 100%;
+            max-width: 750px;
+            height: auto;
+            /* Adds a soft shadow under the car for realism */
+            filter: drop-shadow(0px 15px 25px rgba(0,0,0,0.3)); 
+        }
+
+        /* --- Form Card --- */
+        .form-card {
+            position: absolute;
+            right: 12%; /* Positions form on the pink side */
+            background-color: white;
+            padding: 15px; /* The white outer rim */
+            width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-inner {
+            /* The pink border inside the white card */
+            border: 2px solid #FADadd; 
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: white;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 900;
+            font-family: 'Arial Black', sans-serif;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        /* Input Fields */
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #D3D3D3; /* Light gray background */
+            border: none;
+            font-size: 16px;
+            color: #333;
+            text-align: center; /* Text is centered inside input */
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Checkboxes */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: black;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .checkbox-group input {
+            margin-top: 3px;
+            accent-color: #D90000; /* Red checkmark */
+        }
+
+        /* Login Button */
+        .login-btn {
+            background-color: #D90000; /* Bright red button */
+            color: white;
+            border: none;
+            padding: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 120px;
+            align-self: center; /* Centers the button horizontally */
+        }
+
+        .login-btn:hover {
+            background-color: #b30000;
+        }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 900px) {
+            body {
+                background: #F59696; /* Solid pink on mobile */
+                flex-direction: column;
+                overflow-y: auto;
+            }
+            
+            header {
+                position: relative;
+                background: white;
+                padding: 15px;
+            }
+            
+            nav a { color: black; } 
+            
+            .car-container {
+                position: relative;
+                left: auto;
+                width: 90%;
+                margin-top: 20px;
+            }
+            
+            .form-card {
+                position: relative;
+                right: auto;
+                margin: 40px 0;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">My Booking</a></li>
+                <li><a href="#">Sign in</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Car Image Wrapper -->
+        <div class="car-container">
+            <!-- 
+               IMPORTANT: 
+               If you have your own image, place it in this folder and change the src below.
+               Example: src="my-red-car.png"
+            -->
+            <img src="assets/images/signin.png" alt="Red Sports Car" class="car-img">
+        </div>
+
+        <!-- Login Form Card -->
+        <div class="form-card">
+            <div class="form-inner">
+                <h2 class="form-title">Its easy for you to rent a car</h2>
+                
+                <input type="text" placeholder="Name">
+                <input type="text" placeholder="Phone no">
+                <input type="password" placeholder="Password">
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="age">
+                    <label for="age">I confirm that I am 18 years or older.</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="license">
+                    <label for="license">I have a valid Indian driving license for car rentals.</label>
+                </div>
+                
+                <button class="login-btn">Login</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
