@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Sign Up</title>
+    <style>
+        /* --- CSS STYLES --- */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20; /* Highest priority to sit on top */
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: white; /* White logo on pink bg */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Background Split --- */
+        .pink-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65%; /* Top 65% is pink */
+            background-color: #F08E90; /* Matching the pink shade */
+            z-index: 1;
+        }
+
+        .white-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%; /* Bottom 35% is white/light grey */
+            background-color: #f4f4f4;
+            z-index: 1;
+        }
+
+        /* --- Content Container --- */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- Left Side: Text & Form --- */
+        .left-section {
+            width: 45%;
+            padding-left: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .headline {
+            font-size: 65px;
+            font-weight: 900;
+            color: #4A2C2C; /* Dark brown/maroon color from screenshot */
+            line-height: 1.2;
+            margin-bottom: 30px;
+            font-family: 'Arial Black', sans-serif;
+            text-transform: capitalize;
+            max-width: 1000%;
+            margin-top: 40px; /* Pull text up into the pink area */
+            width: 4500px;
+        }
+
+        .form-box {
+            background-color: white;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            /* Box shadow to make it pop */
+            box-shadow: 0 0 0 15px rgba(255, 255, 255, 0.3); 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 15px;
+            background-color: #EBEBEB; /* Light grey input background */
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #333;
+        }
+
+        /* Button */
+        .signin-btn {
+            background-color: #D90000; /* Red button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: fit-content;
+            margin: 10px auto 0; /* Center horizontally */
+        }
+
+        .signin-btn:hover {
+            background-color: #b30000;
+        }
+
+
+
+        /* --- New User Link Style --- */
+        .new-user-link {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800; /* Bold text */
+            color: black;
+            margin-top: 5px;
+        }
+
+        .new-user-link a {
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .new-user-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Right Side: Car Image --- */
+        .right-section {
+            width: 55%;
+            height: 100%;
+            position: relative;
+        }
+
+        .car-img {
+    position: absolute;
+    right: -410px;   /* Move more to the right (increase this value) */
+    bottom: 10%;
+    width: 170%;     /* Zoom in the image (120% / 140% / 160%) */
+    max-width: none; /* Allows bigger zoom */
+    height: auto;
+    filter: drop-shadow(0px 20px 30px rgba(0,0,0,0.4));
+}
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+                background-color: #F08E90;
+            }
+            .pink-bg, .white-bg { display: none; } /* Remove split on mobile */
+            
+            .container {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .left-section {
+                width: 100%;
+                padding: 0;
+                align-items: center;
+                text-align: center;
+                margin-top: 40px;
+            }
+
+            .headline {
+                font-size: 36px;
+                margin-top: 0;
+                color: #4A2C2C;
+            }
+
+            .form-box {
+                box-shadow: none;
+                border-radius: 10px;
+            }
+
+            .right-section {
+                width: 100%;
+                height: 300px;
+                margin-top: 40px;
+            }
+
+            .car-img {
+                width: 100%;
+                right: 0;
+                bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="offers.html">Services</a></li>
+            <li><a href="mybookings.html">My Booking</a></li>
+            <li><a href="login.html">Sign in</a></li>
+        </ul>
+    </nav>
+    </header>
+
+
+    <!-- Background Elements -->
+    <div class="pink-bg"></div>
+    <div class="white-bg"></div>
+
+    <div class="container">
+        <!-- Left Side -->
+        <div class="left-section">
+            <h1 class="headline">Search, Book And<br>Rent Vehicle Easily</h1>
+            
+            <div class="form-box">
+                <input type="text" placeholder="Name">
+                <input type="password" placeholder="Password">
+                <input type="text" placeholder="Phone no">
+                
+                <button class="signin-btn">Login</button>
+                <!-- NEW USER LINK ADDED HERE -->
+                <div class="new-user-link">
+                    <a href="signup.html">NEW USER? click here to Signup</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="right-section">
+            <!-- White SUV Car Image -->
+            <img src="assets/images/signup.png" alt="White SUV" class="car-img">
+        </div>
+    </div>
+
+</body>
+</html>
