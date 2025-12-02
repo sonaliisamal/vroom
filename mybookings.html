@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - My Booking</title>
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header / Navigation --- */
+        header {
+            background-color: white;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: black;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333; /* Dark blue/black text */
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            color: #D90000;
+        }
+
+        /* --- Warning Banner --- */
+        .warning-banner {
+            text-align: center;
+            color: #D90000;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 20px;
+            text-decoration: underline;
+            line-height: 1.5;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- Main Layout --- */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px 40px;
+            gap: 30px;
+        }
+
+        /* --- Left Side: Booking List --- */
+        .booking-list {
+            flex: 2; /* Takes up 2/3 of space */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .booking-card {
+            background-color: #EEEEEE; /* Light gray card background */
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Card Image Area */
+        .card-img-box {
+            background-color: #ddd; /* Darker gray background for image */
+            width: 280px;
+            height: 160px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative; /* For Cancelled Overlay */
+            overflow: hidden;
+        }
+
+        .card-img-box img {
+            width: 90%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Cancelled Overlay Text */
+        .cancelled-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-weight: 900;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px white; /* Outline effect */
+            z-index: 10;
+            display: none; /* Hidden by default */
+        }
+
+        /* Card Details */
+        .card-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .car-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .status-tag {
+            font-size: 16px;
+            font-weight: 400;
+            color: #D90000; /* Red color for (Booked) etc */
+        }
+
+        .date-info {
+            font-size: 14px;
+            color: #333;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .price-section {
+            margin-top: 15px;
+        }
+
+        .total-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .per-day {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .booking-number {
+            font-size: 14px;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Buttons & Status Text */
+        .action-area {
+            display: flex;
+            justify-content: flex-end; /* Align to right */
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .pay-btn {
+            background-color: #D00000; /* Darker red */
+            color: white;
+            border: none;
+            padding: 8px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .cancel-btn {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .cancel-btn:hover { background-color: #333; }
+
+        .paid-text {
+            color: #ff0000; /* Lighter red/pinkish for "Paid" text */
+            font-weight: 700;
+            font-size: 18px;
+            text-transform: uppercase;
+            border: 2px solid #ff0000;
+            padding: 5px 15px;
+            border-radius: 4px;
+            transform: rotate(-5deg);
+        }
+
+        /* Timer Text */
+        .timer-text {
+            color: #D90000;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        /* Faded Style for Cancelled Card */
+        .card-cancelled {
+            opacity: 0.7; /* Fade the whole card slightly */
+            pointer-events: none; /* Disable clicking */
+        }
+        
+        .card-cancelled .cancelled-overlay {
+            display: block; /* Show overlay */
+        }
+
+        .card-cancelled .card-details {
+            color: #777;
+        }
+
+        .card-cancelled .car-name, 
+        .card-cancelled .total-price {
+            color: #888;
+        }
+
+        /* --- Right Side: Notification Box --- */
+        .notification-sidebar {
+            flex: 1; /* Takes up 1/3 of space */
+            border-left: 2px solid #ccc; /* Vertical divider */
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notify-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .notify-box {
+            background-color: #E0E0E0; /* Slightly darker gray than cards */
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #222;
+            animation: fadeIn 0.5s;
+            border-left: 4px solid #333;
+        }
+
+        .notify-cancel {
+            border-left-color: red;
+            background-color: #ffe6e6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .notification-sidebar {
+                border-left: none;
+                border-top: 2px solid #ccc;
+                padding-left: 0;
+                padding-top: 20px;
+            }
+            .booking-card {
+                flex-direction: column;
+            }
+            .card-img-box {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">VROOM</div>
+        <nav>
+        <ul>
+            <li><a href="cars.html">Cars</a></li>
+            <li><a href="mybooking.html">My Booking</a></li>
+        </ul>
+    </nav>
+    </header>
+
+    <div class="warning-banner">
+        Your booking is held for 30 sec. If payment is not completed, it will be cancelled automatically. Complete the payment to confirm your reservation.
+    </div>
+
+    <div class="main-container">
+        
+        <div class="booking-list" id="bookingContainer">
+            <p style="text-align:center; margin-top:50px; color:#777;">Loading bookings...</p>
+        </div>
+
+        <div class="notification-sidebar">
+            <h3 class="notify-title">Notification Box</h3>
+            <div id="notificationArea">
+                <div class="notify-box">
+                    Welcome to VROOM. Manage your bookings here.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- LOGIC ENGINE ---
+
+        // 1. Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBookings();
+            setInterval(updateSystem, 1000); // Run system check every second
+        });
+
+        // 2. Data Helper Functions
+        function getBookings() {
+            return JSON.parse(localStorage.getItem('vroomBookings') || '[]');
+        }
+
+        function saveBookings(data) {
+            localStorage.setItem('vroomBookings', JSON.stringify(data));
+        }
+
+        // 3. System Update (Timer & Cleanup)
+        function updateSystem() {
+            let bookings = getBookings();
+            let hasChanges = false;
+            const now = Date.now();
+
+            bookings = bookings.filter(booking => {
+                // Rule 1: 30-Second Hold for Pending
+                if (booking.status === 'pending') {
+                    const elapsed = now - booking.createdAt;
+                    const remaining = 30000 - elapsed; // 30 seconds
+
+                    // Update UI Timer
+                    const timerEl = document.getElementById(`timer-${booking.id}`);
+                    if (timerEl) {
+                        const sec = Math.ceil(remaining / 1000);
+                        timerEl.innerText = `Expires in: ${sec > 0 ? sec : 0}s`;
+                    }
+
+                    // Expire if time is up
+                    if (remaining <= 0) {
+                        return false; // Remove booking
+                    }
+                }
+
+                // Rule 2: 5-Minute Cleanup for Cancelled
+                if (booking.status === 'cancelled') {
+                    const elapsed = now - booking.cancelledAt;
+                    if (elapsed > 300000) { // 5 minutes = 300,000ms
+                        return false; // Remove booking
+                    }
+                }
+                
+                return true; // Keep booking
+            });
+
+            // If items were removed, update storage and re-render
+            const originalCount = JSON.parse(localStorage.getItem('vroomBookings') || '[]').length;
+            if (bookings.length !== originalCount) {
+                saveBookings(bookings);
+                renderBookings();
+            }
+        }
+
+        // 4. Render Engine
+        function renderBookings() {
+            const container = document.getElementById('bookingContainer');
+            const bookings = getBookings();
+
+            container.innerHTML = ''; // Clear container
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:40px; color:#888;">No active bookings. <br><a href="cars.html" style="color:#D90000; font-weight:bold;">Book a car now</a></p>';
+                return;
+            }
+
+            // Sort: Pending first, then Paid, then Cancelled
+            // Reverse so newest appears top
+            bookings.reverse().forEach(booking => {
+                container.innerHTML += createCardHTML(booking);
+            });
+        }
+
+        function createCardHTML(booking) {
+            let statusTag = '';
+            let actionButtons = '';
+            let bookingIdHTML = '';
+            let extraClass = '';
+            let timerHTML = '';
+
+            // --- PENDING STATE ---
+            if (booking.status === 'pending') {
+                statusTag = '<span class="status-tag">(Pending Payment)</span>';
+                timerHTML = `<div class="timer-text" id="timer-${booking.id}">Expires in: 30s</div>`;
+                actionButtons = `
+                    <button class="cancel-btn" onclick="cancelBooking(${booking.id})">Cancel</button>
+                    <button class="pay-btn" onclick="processPayment(${booking.id})">Pay</button>
+                `;
+            } 
+            // --- PAID STATE ---
+            else if (booking.status === 'paid') {
+                statusTag = '<span class="status-tag" style="color:green;">(Confirmed)</span>';
+                bookingIdHTML = `<div class="booking-number">Your Booking NO. - ${booking.bookingDisplayId}</div>`;
+                actionButtons = `
+                    <button class="cancel-btn" onclick="cancelBooking(${booking.id})">Cancel</button>
+                    <span class="paid-text">Paid</span>
+                `;
+            } 
+            // --- CANCELLED STATE ---
+            else if (booking.status === 'cancelled') {
+                extraClass = 'card-cancelled';
+                statusTag = '<span class="status-tag">(Cancelled)</span>';
+                if (booking.bookingDisplayId) {
+                    bookingIdHTML = `<div class="booking-number">Booking ID: ${booking.bookingDisplayId}</div>`;
+                }
+                actionButtons = `<span style="color:red; font-weight:bold;">CANCELLED</span>`;
+            }
+
+            return `
+            <div class="booking-card ${extraClass}">
+                <div class="card-img-box">
+                    <img src="${booking.image}" alt="${booking.carName}">
+                    <div class="cancelled-overlay">CANCELLED</div>
+                </div>
+                <div class="card-details">
+                    <div>
+                        <div class="car-name">${booking.carName} ${statusTag}</div>
+                        <div class="date-info">Pickup: ${booking.pickupDate}</div>
+                        <div class="date-info">Dropoff: ${booking.dropoffDate}</div>
+                        <div class="price-section">
+                            <div class="total-price">Total - ₹ ${booking.totalPrice}</div>
+                            <div class="per-day">Rate includes taxes</div>
+                        </div>
+                        ${bookingIdHTML}
+                    </div>
+                    <div class="action-area">
+                        ${timerHTML}
+                        ${actionButtons}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // 5. Actions
+        function processPayment(id) {
+            let bookings = getBookings();
+            const index = bookings.findIndex(b => b.id === id);
+
+            if (index !== -1) {
+                // Generate pseudo-random Booking ID
+                const uniqueId = 'VRM-' + Math.floor(1000 + Math.random() * 9000);
+                
+                bookings[index].status = 'paid';
+                bookings[index].bookingDisplayId = uniqueId;
+                
+                saveBookings(bookings);
+                renderBookings();
+                
+                // Add the two requested messages
+                // Note: We add the second message first in code, so it pushes the first message down (prepend)
+                // This results in "Payment received" appearing at the top of the UI list.
+                
+                addNotification(`If your booking is cancelled, you will first receive an in-site notification followed by a confirmation call from our office.`);
+                addNotification(`Payment received. Your booking ID <b>${uniqueId}</b> has been generated. Present it at vehicle pickup along with your Aadhaar card and driving license.`);
+            }
+        }
+
+        function cancelBooking(id) {
+            let bookings = getBookings();
+            const index = bookings.findIndex(b => b.id === id);
+
+            if (index !== -1) {
+                bookings[index].status = 'cancelled';
+                bookings[index].cancelledAt = Date.now();
+                
+                saveBookings(bookings);
+                renderBookings();
+                
+                const idText = bookings[index].bookingDisplayId ? bookings[index].bookingDisplayId : 'pending';
+                addNotification(`Your car with booking ID ${idText} has been cancelled.`, 'cancel');
+            }
+        }
+
+        function addNotification(msg, type = 'normal') {
+            const area = document.getElementById('notificationArea');
+            const div = document.createElement('div');
+            div.className = type === 'cancel' ? 'notify-box notify-cancel' : 'notify-box';
+            div.innerHTML = msg;
+            area.prepend(div);
+        }
+    </script>
+</body>
+</html>
