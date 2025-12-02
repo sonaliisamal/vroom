@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM - Reservation System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: #f9f9f9; }
+        .top-nav { background-color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; flex-shrink: 0; }
+        .logo-section { display: flex; flex-direction: column; }
+        .logo { font-family: 'Arial Black', sans-serif; font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: black; }
+        .rating { font-size: 13px; color: #666; display: flex; align-items: center; gap: 5px; }
+        .stars { color: #FFC107; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 600; font-size: 16px; }
+        .nav-links a:hover { color: #D90000; }
+        
+        .search-bar-container { background-color: #f0f0f0; padding: 15px 40px; border-bottom: 1px solid #ccc; flex-shrink: 0; }
+        .search-inputs { display: flex; gap: 15px; align-items: center; }
+        .input-group { background: #e0e0e0; padding: 8px 15px; border-radius: 5px; display: flex; align-items: center; gap: 10px; flex: 1; }
+        .input-group i { color: #555; }
+        .input-text { display: flex; flex-direction: column; width: 100%; }
+        .input-label { font-size: 11px; color: #777; margin-bottom: 2px; }
+        .input-field { background: transparent; border: none; outline: none; font-weight: 700; font-size: 14px; color: #000; width: 100%; cursor: pointer; padding: 0; font-family: inherit; }
+        .search-btn { background-color: #D90000; color: white; border: none; padding: 12px 30px; font-weight: bold; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        .search-btn:hover { background-color: #b30000; }
+
+        .main-content { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 250px; background-color: white; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto; }
+        .filter-header { font-size: 20px; font-weight: 800; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 5px; display: inline-block; }
+        .filter-section { margin-bottom: 25px; }
+        .filter-title { font-size: 16px; color: #777; margin-bottom: 10px; font-family: serif; }
+        .filter-option { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 15px; color: #333; cursor: pointer; }
+        .filter-option input { width: 16px; height: 16px; accent-color: #D90000; }
+        
+        .car-results { flex: 1; padding: 30px; overflow-y: auto; background-color: #f9f9f9; }
+        .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .car-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; }
+        .car-card:hover { transform: translateY(-5px); }
+        .car-image-box { background-color: #eee; height: 180px; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .car-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .car-details { padding: 15px; }
+        .car-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+        .features { font-size: 14px; color: #333; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .mileage { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
+        .card-stars { color: #FFC107; font-size: 14px; margin-bottom: 15px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .price { font-size: 22px; font-weight: 900; }
+        .price span { font-size: 12px; font-weight: 400; color: #666; }
+        .reserve-btn { background-color: #D90000; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 14px; }
+        .reserve-btn:hover { background-color: #b30000; }
+
+        /* --- NOTIFICATION TIMER STYLES --- */
+        .notification-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #222;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #D90000;
+        }
+        .timer-highlight { color: #D90000; font-weight: 800; font-size: 1.2em; margin: 0 5px; }
+
+        @media (max-width: 768px) {
+            .main-content { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; padding: 10px; }
+            .car-results { overflow: visible; }
+            .search-inputs { flex-direction: column; align-items: stretch; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notificationBar" class="notification-bar">
+        Your car <span id="reservedCarName" class="timer-highlight"></span> has been reserved. 
+        Complete payment in <span id="countdownTimer" class="timer-highlight">30s</span> or reservation cancels.
+    </div>
+
+    <div class="top-nav">
+        <div class="logo-section">
+            <div class="logo">VROOM</div>
+            <div class="rating">
+                <span class="stars">★★★★☆</span> 
+                <span>4 of 5 based on 2500+ reviews</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="offers.html">Services</a></li>
+            <li><a href="mybookings.html">My Booking</a></li>
+            <li><a href="login.html">Sign in</a></li>
+        </ul>
+    </div>
+
+    <div class="search-bar-container">
+        <form class="search-inputs" id="searchForm" onsubmit="event.preventDefault(); searchAvailability();">
+            <div class="input-group">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="input-text">
+                    <span class="input-label">Location</span>
+                    <input type="text" class="input-field" value="Delhi" placeholder="Enter City">
+                </div>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="input-text">
+                    <span class="input-label">Pick-up date</span>
+                    <input type="date" id="pickupDate" class="input-field" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar-check"></i>
+                <div class="input-text">
+                    <span class="input-label">Drop-off date</span>
+                    <input type="date" id="dropoffDate" class="input-field" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-clock"></i>
+                <div class="input-text">
+                    <span class="input-label">Pick-up time</span>
+                    <select id="pickupTime" class="input-field" required></select>
+                </div>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-history"></i>
+                <div class="input-text">
+                    <span class="input-label">Drop-off time</span>
+                    <select id="dropoffTime" class="input-field" required></select>
+                </div>
+            </div>
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="filter-header">Filter by</div>
+            <div class="filter-section">
+                <div class="filter-title">Car type</div>
+                <label class="filter-option"><input type="checkbox" class="filter-type" value="mini"> Mini</label>
+                <label class="filter-option"><input type="checkbox" class="filter-type" value="standard"> Standard</label>
+                <label class="filter-option"><input type="checkbox" class="filter-type" value="compact"> Compact</label>
+                <label class="filter-option"><input type="checkbox" class="filter-type" value="economy"> Economy</label>
+                <label class="filter-option"><input type="checkbox" class="filter-type" value="van"> Van</label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">Capacity</div>
+                <label class="filter-option"><input type="checkbox" class="filter-capacity" value="small"> 2-5 passengers</label>
+                <label class="filter-option"><input type="checkbox" class="filter-capacity" value="large"> 6 or more passengers</label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-title">Price</div>
+                <label class="filter-option"><input type="checkbox" class="sort-price" value="asc"> Low to high</label>
+                <label class="filter-option"><input type="checkbox" class="sort-price" value="desc"> High to Low</label>
+            </div>
+        </aside>
+
+        <main class="car-results">
+            <div class="car-grid" id="carGrid">
+                
+                <div class="car-card" id="car-1" data-name="Honda Amaze" data-type="compact" data-seats="5" data-price="1600">
+                    <div class="car-image-box"><img src="assets/images/honda amaze.png" alt="Honda Amaze"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Honda Amaze</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Compact</span></div>
+                        <div class="mileage">22-23 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn" onclick="reserveCar('car-1')">RESERVE NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-2" data-name="Maruti Baleno" data-type="standard" data-seats="5" data-price="1600">
+                    <div class="car-image-box"><img src="assets/images/baleno.png" alt="Baleno"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Baleno</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">22-30 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn" onclick="reserveCar('car-2')">RESERVE NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-3" data-name="Toyota Glanza" data-type="standard" data-seats="5" data-price="1600">
+                    <div class="car-image-box"><img src="assets/images/glanza.png" alt="Toyota Glanza"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Toyota Glanza V</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">22-23 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn" onclick="reserveCar('car-3')">RESERVE NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-4" data-name="Hyundai i20" data-type="standard" data-seats="5" data-price="1600">
+                    <div class="car-image-box"><img src="assets/images/i20.png" alt="Hyundai i20"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai i20</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">18–20 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,600 <span>per day</span></div>
+                            <button class="reserve-btn" onclick="reserveCar('car-4')">RESERVE NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-5" data-name="Tata Altroz" data-type="standard" data-seats="5" data-price="1750">
+                    <div class="car-image-box"><img src="assets/images/tata altroz.png" alt="Tata Altroz"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Altroz</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">18-25 km/l</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row">
+                            <div class="price">₹ 1,750 <span>per day</span></div>
+                            <button class="reserve-btn" onclick="reserveCar('car-5')">RESERVE NOW</button>
+                        </div>
+                    </div>
+                </div>
+                
+                 <div class="car-card" id="car-6" data-name="Maruti Dzire" data-type="standard" data-seats="5" data-price="1550">
+                    <div class="car-image-box"><img src="assets/images/maruti suzuki dsire.png" alt="Suzuki Dzire"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Dzire</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">22-28 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 1,550 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-6')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-7" data-name="Hyundai Aura" data-type="compact" data-seats="5" data-price="1800">
+                    <div class="car-image-box"><img src="assets/images/hundai aura.png" alt="Hyundai Aura"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai Aura</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Compact</span></div>
+                        <div class="mileage">18-25 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row"><div class="price">₹ 1,800 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-7')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+                
+                <div class="car-card" id="car-8" data-name="Tata Tiago" data-type="economy" data-seats="5" data-price="1400">
+                    <div class="car-image-box"><img src="assets/images/tata tiago.png" alt="Tata Tiago"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Tiago</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Economy</span></div>
+                        <div class="mileage">20-28 km/kg</div>
+                        <div class="card-stars">★★★★★</div>
+                        <div class="price-row"><div class="price">₹ 1,400 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-8')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-9" data-name="Tata Punch" data-type="compact" data-seats="5" data-price="1600">
+                    <div class="car-image-box"><img src="assets/images/tata punch.png" alt="Tata Punch"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tata Punch</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Compact</span></div>
+                        <div class="mileage">22 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row"><div class="price">₹ 1,600 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-9')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-10" data-name="Alto K10" data-type="mini" data-seats="4" data-price="1000">
+                    <div class="car-image-box"><img src="assets/images/altos k10.png" alt="Suzuki Alto K10"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Alto K10</h3>
+                        <div class="features"><span>4 Seater</span><span>Diesel<br>Mini</span></div>
+                        <div class="mileage">22-30 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row"><div class="price">₹ 1,000 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-10')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-11" data-name="Toyota Fortuner" data-type="standard" data-seats="7" data-price="4500">
+                    <div class="car-image-box"><img src="assets/images/fortuner.png" alt="Toyota Fortuner"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Toyota Fortuner</h3>
+                        <div class="features"><span>7 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">8-10 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 4,500 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-11')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-12" data-name="Suzuki Swift" data-type="standard" data-seats="5" data-price="1300">
+                    <div class="car-image-box"><img src="assets/images/swift.png" alt="Suzuki Swift"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Maruti Suzuki Swift</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">22 km/l</div>
+                        <div class="card-stars">★★★★☆</div>
+                        <div class="price-row"><div class="price">₹ 1,300 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-12')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+
+                <div class="car-card" id="car-13" data-name="Mahindra Scorpio" data-type="standard" data-seats="7" data-price="4000">
+                    <div class="car-image-box"><img src="assets/images/scorpio.png" alt="Mahindra Scorpio"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Mahindra Scorpio</h3>
+                        <div class="features"><span>7 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">19-21 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 4,000 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-13')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-14" data-name="Renault Duster" data-type="standard" data-seats="5" data-price="2,700">
+                    <div class="car-image-box"><img src="assets/images/duster.png" alt="Renault Duster"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Renault Duster</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">14-19 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 2,700 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-14')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-15" data-name="Hyundai Creta" data-type="standard" data-seats="5" data-price="3,000">
+                    <div class="car-image-box"><img src="assets/images/creta.png" alt="Hyundai Creta"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai Creta</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">15-21 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 3,000 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-15')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. GLOBAL VARIABLES & UTILS ---
+        const RESERVATION_KEY = 'vroom_reservations_data';
+        const PAYMENT_WINDOW_MS = 30 * 1000; // 30 seconds
+        
+        // Helper: Get today's reservations from local storage
+        function getReservations() {
+            const data = localStorage.getItem(RESERVATION_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        // Helper: Save reservations
+        function saveReservations(resList) {
+            localStorage.setItem(RESERVATION_KEY, JSON.stringify(resList));
+        }
+
+        // Helper: Clean up expired reservations
+        function cleanExpiredReservations() {
+            const now = new Date().getTime();
+            let reservations = getReservations();
+            // Keep only reservations that haven't expired
+            const validReservations = reservations.filter(res => res.expiryTime > now);
+            saveReservations(validReservations);
+            return validReservations;
+        }
+
+        // --- 2. INITIALIZATION & DATE SETUP ---
+        document.addEventListener('DOMContentLoaded', function() {
+            cleanExpiredReservations(); // Run cleanup on load
+            setupDateInputs();
+            setupTimeInputs();
+            setupFilters();
+            
+            // Default search to show availability
+            searchAvailability();
+            
+            // Check if this specific user has an active pending timer
+            checkActiveUserReservation();
+        });
+
+        function setupDateInputs() {
+            const pickupDateInput = document.getElementById('pickupDate');
+            const dropoffDateInput = document.getElementById('dropoffDate');
+            const today = new Date();
+            
+            // Format YYYY-MM-DD
+            const formatDate = (d) => {
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${dd}`;
+            };
+
+            const todayStr = formatDate(today);
+            let maxYear = today.getFullYear();
+            if(today.getMonth() === 11 && today.getDate() >= 15) maxYear += 1;
+            const maxDateStr = `${maxYear}-12-31`;
+
+            pickupDateInput.min = todayStr;
+            pickupDateInput.max = maxDateStr;
+            dropoffDateInput.min = todayStr;
+            dropoffDateInput.max = maxDateStr;
+
+            pickupDateInput.addEventListener('change', function() {
+                dropoffDateInput.min = this.value;
+                if (dropoffDateInput.value && dropoffDateInput.value < this.value) {
+                    dropoffDateInput.value = this.value;
+                }
+            });
+            
+            // Set defaults to today
+            pickupDateInput.value = todayStr;
+            dropoffDateInput.value = todayStr;
+        }
+
+        function setupTimeInputs() {
+            const pickupTime = document.getElementById('pickupTime');
+            const dropoffTime = document.getElementById('dropoffTime');
+            
+            const createOption = (hour) => {
+                const opt = document.createElement('option');
+                const val = `${String(hour).padStart(2, '0')}:00`;
+                let display = hour > 12 ? hour - 12 : hour;
+                let ampm = hour >= 12 ? 'PM' : 'AM';
+                opt.value = val;
+                opt.textContent = `${display}:00 ${ampm}`;
+                return opt;
+            }
+
+            for(let i=8; i<=20; i++) {
+                pickupTime.appendChild(createOption(i));
+                dropoffTime.appendChild(createOption(i));
+            }
+            pickupTime.value = "10:00";
+            dropoffTime.value = "18:00";
+        }
+
+        // --- 3. AVAILABILITY SEARCH ENGINE ---
+        function searchAvailability() {
+            // 1. Get User Input Range
+            const startD = document.getElementById('pickupDate').value;
+            const endD = document.getElementById('dropoffDate').value;
+            const startT = document.getElementById('pickupTime').value;
+            const endT = document.getElementById('dropoffTime').value;
+
+            if(!startD || !endD) return;
+
+            // Create timestamp objects for comparison
+            const userStart = new Date(`${startD}T${startT}`).getTime();
+            const userEnd = new Date(`${endD}T${endT}`).getTime();
+
+            // 2. Fetch Clean Reservations
+            const reservations = cleanExpiredReservations();
+
+            // 3. Mark Cars as "Booked" or "Available"
+            const cars = document.querySelectorAll('.car-card');
+            
+            cars.forEach(car => {
+                const carId = car.id;
+                
+                // Check if this car has a reservation overlapping with user request
+                const isBooked = reservations.some(res => {
+                    if (res.carId !== carId) return false;
+                    
+                    // Overlap Formula: (StartA < EndB) and (EndA > StartB)
+                    return (userStart < res.endTime && userEnd > res.startTime);
+                });
+
+                if (isBooked) {
+                    car.classList.add('is-reserved-hidden'); // Add marker class
+                    car.style.display = 'none'; // Hide visually
+                } else {
+                    car.classList.remove('is-reserved-hidden');
+                    car.style.display = 'flex'; // Show visually (subject to filters below)
+                }
+            });
+
+            // 4. Re-run sidebar filters to ensure UI is consistent
+            filterCars(); 
+        }
+
+        // --- 4. RESERVATION ACTION ---
+        function reserveCar(carId) {
+            const carElement = document.getElementById(carId);
+            const carName = carElement.getAttribute('data-name');
+            
+            // Get selected times
+            const startD = document.getElementById('pickupDate').value;
+            const endD = document.getElementById('dropoffDate').value;
+            const startT = document.getElementById('pickupTime').value;
+            const endT = document.getElementById('dropoffTime').value;
+            
+            const startTime = new Date(`${startD}T${startT}`).getTime();
+            const endTime = new Date(`${endD}T${endT}`).getTime();
+
+            // 30 Seconds expiry
+            const expiryTime = new Date().getTime() + PAYMENT_WINDOW_MS; 
+
+            // Create Reservation Object
+            const newReservation = {
+                id: Date.now(), // unique ID for booking
+                carId: carId,
+                carName: carName,
+                startTime: startTime,
+                endTime: endTime,
+                expiryTime: expiryTime
+            };
+
+            // Save to LocalStorage
+            const reservations = getReservations();
+            reservations.push(newReservation);
+            saveReservations(reservations);
+
+            // Trigger Search to hide the car immediately
+            searchAvailability();
+
+            // Start User Timer
+            startTimerDisplay(expiryTime, carName);
+        }
+
+        // --- 5. TIMER & NOTIFICATION LOGIC ---
+        let countdownInterval;
+
+        function startTimerDisplay(expiryTime, carName) {
+            const notification = document.getElementById('notificationBar');
+            const nameSpan = document.getElementById('reservedCarName');
+            const timerSpan = document.getElementById('countdownTimer');
+
+            notification.style.display = 'block';
+            nameSpan.textContent = carName;
+
+            // Clear existing interval if any
+            if(countdownInterval) clearInterval(countdownInterval);
+
+            // Update every 100ms for smooth UI
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = expiryTime - now;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    notification.style.display = 'none';
+                    alert("Time's up! Reservation cancelled.");
+                    cleanExpiredReservations();
+                    searchAvailability(); // Refresh list to show car again
+                    return;
+                }
+
+                // Calculate seconds
+                const seconds = Math.ceil(distance / 1000);
+                timerSpan.textContent = `${seconds}s`;
+            }, 100);
+        }
+
+        function checkActiveUserReservation() {
+            // Find if we have a valid recent reservation in storage
+            const reservations = getReservations();
+            if(reservations.length > 0) {
+                // Get the most recently added reservation
+                const lastRes = reservations[reservations.length - 1];
+                const now = new Date().getTime();
+                if(lastRes.expiryTime > now) {
+                    startTimerDisplay(lastRes.expiryTime, lastRes.carName);
+                }
+            }
+        }
+
+        // --- 6. FILTER LOGIC (Updated to work with Availability) ---
+        function setupFilters() {
+            const inputs = document.querySelectorAll('.filter-type, .filter-capacity, .sort-price');
+            
+            // Exclusive check for price sorting
+            const priceSorts = document.querySelectorAll('.sort-price');
+            priceSorts.forEach(input => input.addEventListener('change', function() {
+                if(this.checked) {
+                    priceSorts.forEach(o => { if(o !== this) o.checked = false; });
+                }
+                filterCars();
+            }));
+
+            // General listeners
+            inputs.forEach(input => {
+                if(!input.classList.contains('sort-price')) {
+                    input.addEventListener('change', filterCars);
+                }
+            });
+        }
+
+        function filterCars() {
+            const cars = Array.from(document.querySelectorAll('.car-card'));
+            
+            // Get filter values
+            const types = Array.from(document.querySelectorAll('.filter-type:checked')).map(i => i.value);
+            const caps = Array.from(document.querySelectorAll('.filter-capacity:checked')).map(i => i.value);
+            
+            let visibleCars = [];
+
+            cars.forEach(car => {
+                // IMPORTANT: If car is already hidden by reservation logic, skip it
+                if(car.classList.contains('is-reserved-hidden')) return; 
+
+                const cType = car.getAttribute('data-type');
+                const cSeats = parseInt(car.getAttribute('data-seats'));
+
+                const typeMatch = types.length === 0 || types.includes(cType);
+                
+                let capMatch = false;
+                if (caps.length === 0) capMatch = true;
+                else {
+                    if (caps.includes('small') && cSeats >= 2 && cSeats <= 5) capMatch = true;
+                    if (caps.includes('large') && cSeats >= 6) capMatch = true;
+                }
+
+                if (typeMatch && capMatch) {
+                    car.style.display = 'flex';
+                    visibleCars.push(car);
+                } else {
+                    car.style.display = 'none';
+                }
+            });
+
+            // Sorting
+            const sortInput = document.querySelector('.sort-price:checked');
+            if(sortInput) {
+                const dir = sortInput.value;
+                visibleCars.sort((a, b) => {
+                    const pA = parseInt(a.getAttribute('data-price'));
+                    const pB = parseInt(b.getAttribute('data-price'));
+                    return dir === 'asc' ? pA - pB : pB - pA;
+                });
+                const grid = document.getElementById('carGrid');
+                visibleCars.forEach(c => grid.appendChild(c));
+            }
+        }
+    </script>
+</body>
+</html>
