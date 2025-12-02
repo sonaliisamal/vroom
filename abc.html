@@ -53,7 +53,7 @@
         .reserve-btn { background-color: #D90000; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 14px; }
         .reserve-btn:hover { background-color: #b30000; }
 
-        /* --- NOTIFICATION TIMER STYLES --- */
+        /* --- NOTIFICATION TIMER STYLES (Used in JS) --- */
         .notification-bar {
             position: fixed;
             top: 0;
@@ -65,7 +65,7 @@
             text-align: center;
             font-weight: 600;
             z-index: 1000;
-            display: none; /* Hidden by default */
+            display: none;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             border-bottom: 3px solid #D90000;
         }
@@ -105,7 +105,7 @@
     </div>
 
     <div class="search-bar-container">
-        <form class="search-inputs" id="searchForm" onsubmit="event.preventDefault(); searchAvailability();">
+        <form class="search-inputs" id="searchForm" onsubmit="event.preventDefault(); filterCars();">
             <div class="input-group">
                 <i class="fas fa-map-marker-alt"></i>
                 <div class="input-text">
@@ -317,48 +317,53 @@
                         <div class="price-row"><div class="price">₹ 1,300 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-12')">RESERVE NOW</button></div>
                     </div>
                 </div>
+
+
+                <div class="car-card" id="car-13" data-name="Mahindra Scorpio" data-type="standard" data-seats="7" data-price="4000">
+                    <div class="car-image-box"><img src="assets/images/scorpio.png" alt="Mahindra Scorpio"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Mahindra Scorpio</h3>
+                        <div class="features"><span>7 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">19-21 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 4,000 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-13')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-14" data-name="Renault Duster" data-type="standard" data-seats="5" data-price="2,700">
+                    <div class="car-image-box"><img src="assets/images/duster.png" alt="Renault Duster"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Renault Duster</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">14-19 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 2,700 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-14')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
+                <div class="car-card" id="car-15" data-name="Hyundai Creta" data-type="standard" data-seats="5" data-price="3,000">
+                    <div class="car-image-box"><img src="assets/images/creta.png" alt="Hyundai Creta"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">Hyundai Creta</h3>
+                        <div class="features"><span>5 Seater</span><span>Petrol<br>Standard</span></div>
+                        <div class="mileage">15-21 km/l</div>
+                        <div class="card-stars">★★★☆☆</div>
+                        <div class="price-row"><div class="price">₹ 3,000 <span>per day</span></div><button class="reserve-btn" onclick="reserveCar('car-15')">RESERVE NOW</button></div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
     <script>
         // --- 1. GLOBAL VARIABLES & UTILS ---
-        const RESERVATION_KEY = 'vroom_reservations_data';
-        const PAYMENT_WINDOW_MS = 30 * 1000; // 30 seconds
         
-        // Helper: Get today's reservations from local storage
-        function getReservations() {
-            const data = localStorage.getItem(RESERVATION_KEY);
-            return data ? JSON.parse(data) : [];
-        }
-
-        // Helper: Save reservations
-        function saveReservations(resList) {
-            localStorage.setItem(RESERVATION_KEY, JSON.stringify(resList));
-        }
-
-        // Helper: Clean up expired reservations
-        function cleanExpiredReservations() {
-            const now = new Date().getTime();
-            let reservations = getReservations();
-            // Keep only reservations that haven't expired
-            const validReservations = reservations.filter(res => res.expiryTime > now);
-            saveReservations(validReservations);
-            return validReservations;
-        }
-
         // --- 2. INITIALIZATION & DATE SETUP ---
         document.addEventListener('DOMContentLoaded', function() {
-            cleanExpiredReservations(); // Run cleanup on load
             setupDateInputs();
             setupTimeInputs();
             setupFilters();
-            
-            // Default search to show availability
-            searchAvailability();
-            
-            // Check if this specific user has an active pending timer
-            checkActiveUserReservation();
         });
 
         function setupDateInputs() {
@@ -418,137 +423,48 @@
             dropoffTime.value = "18:00";
         }
 
-        // --- 3. AVAILABILITY SEARCH ENGINE ---
-        function searchAvailability() {
-            // 1. Get User Input Range
-            const startD = document.getElementById('pickupDate').value;
-            const endD = document.getElementById('dropoffDate').value;
-            const startT = document.getElementById('pickupTime').value;
-            const endT = document.getElementById('dropoffTime').value;
-
-            if(!startD || !endD) return;
-
-            // Create timestamp objects for comparison
-            const userStart = new Date(`${startD}T${startT}`).getTime();
-            const userEnd = new Date(`${endD}T${endT}`).getTime();
-
-            // 2. Fetch Clean Reservations
-            const reservations = cleanExpiredReservations();
-
-            // 3. Mark Cars as "Booked" or "Available"
-            const cars = document.querySelectorAll('.car-card');
-            
-            cars.forEach(car => {
-                const carId = car.id;
-                
-                // Check if this car has a reservation overlapping with user request
-                const isBooked = reservations.some(res => {
-                    if (res.carId !== carId) return false;
-                    
-                    // Overlap Formula: (StartA < EndB) and (EndA > StartB)
-                    return (userStart < res.endTime && userEnd > res.startTime);
-                });
-
-                if (isBooked) {
-                    car.classList.add('is-reserved-hidden'); // Add marker class
-                    car.style.display = 'none'; // Hide visually
-                } else {
-                    car.classList.remove('is-reserved-hidden');
-                    car.style.display = 'flex'; // Show visually (subject to filters below)
-                }
-            });
-
-            // 4. Re-run sidebar filters to ensure UI is consistent
-            filterCars(); 
-        }
-
-        // --- 4. RESERVATION ACTION ---
+        // --- 3. RESERVATION ACTION (Redirect to MyBooking) ---
         function reserveCar(carId) {
             const carElement = document.getElementById(carId);
             const carName = carElement.getAttribute('data-name');
+            // Remove commas for clean data processing
+            const carPrice = carElement.getAttribute('data-price').replace(/,/g, '');
+            const carImg = carElement.querySelector('img').src;
             
-            // Get selected times
-            const startD = document.getElementById('pickupDate').value;
-            const endD = document.getElementById('dropoffDate').value;
-            const startT = document.getElementById('pickupTime').value;
-            const endT = document.getElementById('dropoffTime').value;
-            
-            const startTime = new Date(`${startD}T${startT}`).getTime();
-            const endTime = new Date(`${endD}T${endT}`).getTime();
+            // Get selected input values
+            let startD = document.getElementById('pickupDate').value;
+            let startT = document.getElementById('pickupTime').value;
+            let endD = document.getElementById('dropoffDate').value;
+            let endT = document.getElementById('dropoffTime').value;
 
-            // 30 Seconds expiry
-            const expiryTime = new Date().getTime() + PAYMENT_WINDOW_MS; 
+            // Default fallback if fields are empty
+            if(!startD) startD = "2025-12-17";
+            if(!endD) endD = "2025-12-19";
 
-            // Create Reservation Object
-            const newReservation = {
-                id: Date.now(), // unique ID for booking
-                carId: carId,
+            // Create Booking Object
+            const booking = {
+                id: Date.now(),
                 carName: carName,
-                startTime: startTime,
-                endTime: endTime,
-                expiryTime: expiryTime
+                image: carImg,
+                totalPrice: carPrice,
+                pickupDate: `${startD} ${startT || '10:00'}`,
+                dropoffDate: `${endD} ${endT || '18:00'}`,
+                status: 'pending', // Pending, paid, cancelled
+                bookingDisplayId: null,
+                createdAt: Date.now(), // Timer starts now
+                cancelledAt: null
             };
 
-            // Save to LocalStorage
-            const reservations = getReservations();
-            reservations.push(newReservation);
-            saveReservations(reservations);
+            // Save to LocalStorage (Key: vroomBookings matches mybookings.html)
+            let bookings = JSON.parse(localStorage.getItem('vroomBookings') || '[]');
+            bookings.push(booking);
+            localStorage.setItem('vroomBookings', JSON.stringify(bookings));
 
-            // Trigger Search to hide the car immediately
-            searchAvailability();
-
-            // Start User Timer
-            startTimerDisplay(expiryTime, carName);
+            // REDIRECT IMMEDIATELY
+            window.location.href = 'mybookings.html';
         }
 
-        // --- 5. TIMER & NOTIFICATION LOGIC ---
-        let countdownInterval;
-
-        function startTimerDisplay(expiryTime, carName) {
-            const notification = document.getElementById('notificationBar');
-            const nameSpan = document.getElementById('reservedCarName');
-            const timerSpan = document.getElementById('countdownTimer');
-
-            notification.style.display = 'block';
-            nameSpan.textContent = carName;
-
-            // Clear existing interval if any
-            if(countdownInterval) clearInterval(countdownInterval);
-
-            // Update every 100ms for smooth UI
-            countdownInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = expiryTime - now;
-
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    notification.style.display = 'none';
-                    alert("Time's up! Reservation cancelled.");
-                    cleanExpiredReservations();
-                    searchAvailability(); // Refresh list to show car again
-                    return;
-                }
-
-                // Calculate seconds
-                const seconds = Math.ceil(distance / 1000);
-                timerSpan.textContent = `${seconds}s`;
-            }, 100);
-        }
-
-        function checkActiveUserReservation() {
-            // Find if we have a valid recent reservation in storage
-            const reservations = getReservations();
-            if(reservations.length > 0) {
-                // Get the most recently added reservation
-                const lastRes = reservations[reservations.length - 1];
-                const now = new Date().getTime();
-                if(lastRes.expiryTime > now) {
-                    startTimerDisplay(lastRes.expiryTime, lastRes.carName);
-                }
-            }
-        }
-
-        // --- 6. FILTER LOGIC (Updated to work with Availability) ---
+        // --- 4. FILTER LOGIC ---
         function setupFilters() {
             const inputs = document.querySelectorAll('.filter-type, .filter-capacity, .sort-price');
             
@@ -579,9 +495,6 @@
             let visibleCars = [];
 
             cars.forEach(car => {
-                // IMPORTANT: If car is already hidden by reservation logic, skip it
-                if(car.classList.contains('is-reserved-hidden')) return; 
-
                 const cType = car.getAttribute('data-type');
                 const cSeats = parseInt(car.getAttribute('data-seats'));
 
@@ -607,8 +520,8 @@
             if(sortInput) {
                 const dir = sortInput.value;
                 visibleCars.sort((a, b) => {
-                    const pA = parseInt(a.getAttribute('data-price'));
-                    const pB = parseInt(b.getAttribute('data-price'));
+                    const pA = parseInt(a.getAttribute('data-price').replace(/,/g, ''));
+                    const pB = parseInt(b.getAttribute('data-price').replace(/,/g, ''));
                     return dir === 'asc' ? pA - pB : pB - pA;
                 });
                 const grid = document.getElementById('carGrid');
