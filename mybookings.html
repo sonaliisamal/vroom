@@ -365,7 +365,6 @@
         // 3. System Update (Timer & Cleanup)
         function updateSystem() {
             let bookings = getBookings();
-            let hasChanges = false;
             const now = Date.now();
 
             bookings = bookings.filter(booking => {
@@ -432,6 +431,21 @@
             let extraClass = '';
             let timerHTML = '';
 
+            // --- DATE & PRICE CALCULATIONS ---
+            // 1. Calculate Days
+            const start = new Date(booking.pickupDate);
+            const end = new Date(booking.dropoffDate);
+            
+            // Calculate time difference
+            const diffTime = Math.abs(end - start);
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            if(diffDays === 0) diffDays = 1; // Minimum 1 day rental
+
+            // 2. Calculate Total Cost
+            // Use pricePerDay from cars.html. Fallback to totalPrice if pricePerDay is missing (old data)
+            const dailyRate = booking.pricePerDay ? parseInt(booking.pricePerDay) : (parseInt(booking.totalPrice) || 0);
+            const grandTotal = dailyRate * diffDays;
+
             // --- PENDING STATE ---
             if (booking.status === 'pending') {
                 statusTag = '<span class="status-tag">(Pending Payment)</span>';
@@ -472,8 +486,8 @@
                         <div class="date-info">Pickup: ${booking.pickupDate}</div>
                         <div class="date-info">Dropoff: ${booking.dropoffDate}</div>
                         <div class="price-section">
-                            <div class="total-price">Total - ₹ ${booking.totalPrice}</div>
-                            <div class="per-day">Rate includes taxes</div>
+                            <div class="total-price">Total - ₹ ${grandTotal} <span style="font-size:14px; font-weight:400; color:#555;">(${diffDays} Days)</span></div>
+                            <div class="per-day">Rate: ₹ ${dailyRate} / day</div>
                         </div>
                         ${bookingIdHTML}
                     </div>
@@ -502,9 +516,6 @@
                 renderBookings();
                 
                 // Add the two requested messages
-                // Note: We add the second message first in code, so it pushes the first message down (prepend)
-                // This results in "Payment received" appearing at the top of the UI list.
-                
                 addNotification(`If your booking is cancelled, you will first receive an in-site notification followed by a confirmation call from our office.`);
                 addNotification(`Payment received. Your booking ID <b>${uniqueId}</b> has been generated. Present it at vehicle pickup along with your Aadhaar card and driving license.`);
             }
