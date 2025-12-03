@@ -447,6 +447,7 @@
                 carName: carName,
                 image: carImg,
                 totalPrice: carPrice,
+                pricePerDay: carPrice, // <--- ADDED THIS LINE TO FIX THE ZERO PRICE ISSUE
                 pickupDate: `${startD} ${startT || '10:00'}`,
                 dropoffDate: `${endD} ${endT || '18:00'}`,
                 status: 'pending', // Pending, paid, cancelled
