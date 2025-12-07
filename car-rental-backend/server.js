@@ -87,3 +87,14 @@ app.use((err, req, res, next) => {
 
 // 🌐 Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+const startBookingScheduler = require('./utils/bookingTimer');
+
+// ... other imports and app setup ...
+
+// Start the background timer
+startBookingScheduler();
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
